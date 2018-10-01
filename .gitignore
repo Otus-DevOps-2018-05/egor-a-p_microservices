@@ -1,0 +1,29 @@
+### Idea:
+.idea
+*.iml
+out
+target
+
+### Packer
+variables.json
+
+### Terraform
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup
+*.tfvars
+.terraform/
+
+### Ansible
+*.retry
+jdauphant.nginx/
+ansible/roles/db/*
+vault.key
+
+### Vagrant & Molecule
+.vagrant/
+*.log
+*.pyc
+.molecule
+.cache
+.pytest_cache
