@@ -21,5 +21,8 @@ egor-a-p microservices repository
 
  Задание со *:
  
+  - плейбук для накатывания докера на ubuntu (использовал роль angstwad.docker_ubuntu)
   - сборка образа пакером из docker-monolith/infra: packer build -var-file=packer/variables.json packer/docker.json
+  - развертывание инстансов с докером с помощью terraform
+  - роль для запуска контейнера с reddit
   

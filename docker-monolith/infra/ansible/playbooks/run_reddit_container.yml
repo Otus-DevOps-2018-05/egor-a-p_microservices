@@ -1,0 +1,11 @@
+---
+- name: Run reddit container
+  hosts: docker
+  become: true
+  tasks:
+    - name: reddit container
+      docker_container:
+        name: otus-reddit
+        image: egorapetrov/otus-reddit:1.0
+        ports:
+        - "9292:9292"
