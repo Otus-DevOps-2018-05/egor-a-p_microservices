@@ -21,4 +21,5 @@ egor-a-p microservices repository
 
  Задание со *:
  
-  - проведено сравнение описаний образа и контейнера
+  - сборка образа пакером из docker-monolith/infra: packer build -var-file=packer/variables.json packer/docker.json
+  
