@@ -10,3 +10,19 @@ egor-a-p microservices repository
  Задание со *:
  
   - проведено сравнение описаний образа и контейнера
+  
+  ## Домашнее задание 13
+ 
+ Что сделано:
+ 
+  - создан новый проект GCP с именем docker, установлена docker-machine, создан docker-host в GCE
+  - повторение практики из лекции по работе с PID, network и user namespaces
+  - создан образ с reddit и залит в docker hub
+
+ Задание со *:
+ 
+  - плейбук для накатывания докера на ubuntu (использовал роль angstwad.docker_ubuntu)
+  - сборка образа пакером из docker-monolith/infra: packer build -var-file=packer/variables.json packer/docker.json
+  - развертывание инстансов с докером с помощью terraform
+  - роль для запуска контейнера с reddit
+  

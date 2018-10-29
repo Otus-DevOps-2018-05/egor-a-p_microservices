@@ -16,8 +16,7 @@ variables.json
 
 ### Ansible
 *.retry
-jdauphant.nginx/
-ansible/roles/db/*
+angstwad.docker_ubuntu/
 vault.key
 
 ### Vagrant & Molecule
