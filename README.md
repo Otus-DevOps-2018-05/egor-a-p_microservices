@@ -26,3 +26,31 @@ egor-a-p microservices repository
   - развертывание инстансов с докером с помощью terraform
   - роль для запуска контейнера с reddit
   
+  ## Домашнее задание 14
+ 
+ Что сделано:
+ 
+  - написаны докерфайлы для микросервисов, созданные образы задеплоены
+  - оптимизирован образ ui
+  - добавлен volume к контейнеру с монго, контейнер с монго перезапущен, пост на месте
+
+
+ Задание со *:
+  - Запущены контейнеры с другими сетевыми алиасами, при запуске контейнеров заданы переменные окружения соответствующие новым сетевым алиасам:
+  ```
+     docker run -d --network=reddit --network-alias=post_db --network-alias=comment_db mongo:latest
+     docker run -d --network=reddit --network-alias=comment_host egorapetrov/comment:1.0
+     docker run -d --network=reddit --network-alias=post_host egorapetrov/post:1.0
+     docker run -d --network=reddit -p 9292:9292 --env POST_SERVICE_HOST=post_host --env COMMENT_SERVICE_HOST=comment_host  egorapetrov/ui:1.0
+  ```
+  - Образы ui и comment собраны на ruby-alpine, в итоге вышло:
+  ```
+     REPOSITORY            TAG        SIZE
+     egorapetrov/ui        3.0        241MB
+     egorapetrov/comment   2.0        231MB
+     egorapetrov/ui        2.0        461MB
+     egorapetrov/comment   1.0        771MB
+     egorapetrov/ui        1.0        779MB
+     egorapetrov/post      1.0        102MB
+
+  ```
