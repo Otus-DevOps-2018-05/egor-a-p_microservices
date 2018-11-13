@@ -99,7 +99,7 @@ delete_branch_review:
     - gcloud config set project $GCP_PROJECT_ID
 
      # Delete VM
-    - gcloud compute instances delete reddit-gitlab-$CI_ENVIRONMENT_SLUG  --zone=$GCP_ZONE
+    - gcloud compute instances delete "reddit-gitlab-${CI_ENVIRONMENT_SLUG}"  --zone=$GCP_ZONE --quiet
   environment:
     name: branch/$CI_COMMIT_REF_NAME
     action: stop
