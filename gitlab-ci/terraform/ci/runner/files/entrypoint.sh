@@ -5,9 +5,9 @@ gitlab-runner register \
   --url "${ci_url}" \
   --registration-token "${ci_token}" \
   --executor "docker" \
-  --docker-image alpine:3 \
+  --docker-image alpine:latest \
   --description "docker-runner" \
-  --tag-list "docker,aws" \
+  --tag-list "linux,xenial,ubuntu,docker" \
   --run-untagged \
   --locked="false"
 
