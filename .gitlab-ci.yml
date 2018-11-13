@@ -7,6 +7,7 @@ stages:
 
 variables:
   DATABASE_URL: 'mongodb://mongo/user_posts'
+  MACHINE_IP: ''
 
 before_script:
   - cd reddit
@@ -18,7 +19,7 @@ build_job:
     - docker:dind
   script:
     - echo 'Building'
-    - docker build -t ${DOCKER_HUB_LOGIN}/reddit-gitlab:${CI_COMMIT_REF_SLUG} ./
+    - docker build -t ${DOCKER_HUB_LOGIN}/reddit-gitlab:${CI_COMMIT_REF_SLUG} ../docker-monolith
     - docker login --username ${DOCKER_HUB_LOGIN} --password ${DOCKER_HUB_PASSWORD}
     - docker push ${DOCKER_HUB_LOGIN}/reddit-gitlab:${CI_COMMIT_REF_SLUG}
 
@@ -39,6 +40,7 @@ test_integration_job:
 branch_review:
   stage: review
   image: google/cloud-sdk:alpine
+
   before_script:
     - echo "Deploy to $CI_ENVIRONMENT_SLUG"
   script:
@@ -64,6 +66,7 @@ branch_review:
 
     # Export IP
     - export MACHINE_IP=$(docker-machine ip reddit-gitlab-$CI_ENVIRONMENT_SLUG)
+    - echo $MACHINE_IP
 
     # Deploy app
     - eval $(docker-machine env --shell sh reddit-gitlab-$CI_ENVIRONMENT_SLUG)
@@ -79,6 +82,8 @@ branch_review:
 
 delete_branch_review:
   stage: review
+  variables:
+    GIT_STRATEGY: none
   image: google/cloud-sdk:alpine
   when: manual
   before_script:
@@ -90,17 +95,14 @@ delete_branch_review:
 
     # Prepare GCP credentials
     - echo $GCP_CREDENTIALS > /tmp/gcloud-service-key.json
-    - export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcloud-service-key.json
+    - gcloud auth activate-service-account --key-file=/tmp/gcloud-service-key.json
+    - gcloud config set project $GCP_PROJECT_ID
 
      # Delete VM
     - gcloud compute instances delete reddit-gitlab-$CI_ENVIRONMENT_SLUG  --zone=$GCP_ZONE
   environment:
     name: branch/$CI_COMMIT_REF_NAME
     action: stop
-  only:
-    - branches
-  except:
-    - master
 
 staging:
   stage: stage
