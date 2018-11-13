@@ -36,7 +36,7 @@ test_integration_job:
   script:
     - echo 'Testing 2'
 
-branch review:
+branch_review:
   stage: review
   image: google/cloud-sdk:alpine
   before_script:
@@ -71,18 +71,18 @@ branch review:
   environment:
     name: branch/$CI_COMMIT_REF_NAME
     url: http://$MACHINE_IP:9292
-    on_stop: delete branch review
+    on_stop: delete_branch_review
   only:
     - branches
   except:
     - master
 
-delete branch review:
-  image: docker:latest
+delete_branch_review:
   stage: review
+  image: google/cloud-sdk:alpine
   when: manual
   before_script:
-    - echo "Deleting environment"
+    - echo "Deleting env"
   script:
     # Install tools
     - apk add --update make ca-certificates openssl python curl
@@ -94,7 +94,7 @@ delete branch review:
 
      # Delete VM
     - gcloud compute instances delete reddit-gitlab-$CI_ENVIRONMENT_SLUG  --zone=$GCP_ZONE
-   environment:
+  environment:
     name: branch/$CI_COMMIT_REF_NAME
     action: stop
   only:
