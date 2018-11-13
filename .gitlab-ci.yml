@@ -62,8 +62,8 @@ branch review:
       --google-project $GCP_PROJECT_ID
       --google-zone europe-north1-c reddit-gitlab-$CI_ENVIRONMENT_SLUG
 
-    # export IP
-    - export MACHINE_IP = docker-machine ip reddit-gitlab-$CI_ENVIRONMENT_SLUG
+    # Export IP
+    - export MACHINE_IP=$(docker-machine ip reddit-gitlab-$CI_ENVIRONMENT_SLUG)
 
     # Deploy app
     - eval $(docker-machine env --shell sh reddit-gitlab-$CI_ENVIRONMENT_SLUG)
