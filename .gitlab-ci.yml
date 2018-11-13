@@ -43,7 +43,7 @@ branch review:
     - echo "Deploy to $CI_ENVIRONMENT_SLUG"
   script:
     # Install tools
-    - apk add --update make ca-certificates openssl python curl
+    - apk add --update make ca-certificates openssl python curl docker
     - update-ca-certificates
 
     # Prepare GCP credentials
@@ -68,10 +68,35 @@ branch review:
     # Deploy app
     - eval $(docker-machine env --shell sh reddit-gitlab-$CI_ENVIRONMENT_SLUG)
     - docker run -d -p 9292:9292 ${DOCKER_HUB_LOGIN}/reddit-gitlab:${CI_COMMIT_REF_SLUG}
-
   environment:
     name: branch/$CI_COMMIT_REF_NAME
     url: http://$MACHINE_IP:9292
+    on_stop: delete branch review
+  only:
+    - branches
+  except:
+    - master
+
+delete branch review:
+  image: docker:latest
+  stage: review
+  when: manual
+  before_script:
+    - echo "Deleting environment"
+  script:
+    # Install tools
+    - apk add --update make ca-certificates openssl python curl
+    - update-ca-certificates
+
+    # Prepare GCP credentials
+    - echo $GCP_CREDENTIALS > /tmp/gcloud-service-key.json
+    - export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcloud-service-key.json
+
+     # Delete VM
+    - gcloud compute instances delete reddit-gitlab-$CI_ENVIRONMENT_SLUG  --zone=$GCP_ZONE
+   environment:
+    name: branch/$CI_COMMIT_REF_NAME
+    action: stop
   only:
     - branches
   except:
