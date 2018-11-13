@@ -1,0 +1,4 @@
+gitlab_url = "http://127.0.0.1"
+runners_number = 3
+token = "12345"
+docker_host_ip="35.228.222.63"

@@ -2,7 +2,7 @@
   "variables": {
     "project_id": null,
     "source_image_family": null,
-    "machine_type": "n1-standard-1"
+    "machine_type": "f1-micro"
   },
   "builders": [
     {
@@ -11,7 +11,7 @@
       "image_name": "docker-base-{{timestamp}}",
       "image_family": "docker-base",
       "source_image_family": "{{user `source_image_family`}}",
-      "zone": "europe-west1-b",
+      "zone": "europe-north1-c",
       "ssh_username": "appuser",
       "machine_type": "{{user `machine_type`}}",
       "image_description": "ubuntu docker base image"
