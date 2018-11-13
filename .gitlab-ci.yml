@@ -1,3 +1,5 @@
+image: ruby:latest
+
 stages:
   - build
   - test
@@ -7,7 +9,6 @@ variables:
   DATABASE_URL: 'mongodb://mongo/user_posts'
 
 before_script:
-  - apk --no-cache add ruby ruby-dev ruby-bundler ruby-json ruby-irb ruby-rake ruby-bigdecimal
   - cd reddit
   - bundle install
 
