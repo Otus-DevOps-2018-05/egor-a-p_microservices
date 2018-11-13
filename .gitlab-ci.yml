@@ -20,7 +20,6 @@ build_job:
     - echo 'Building'
     - docker build -t ${DOCKER_HUB_LOGIN}/reddit-gitlab:${CI_COMMIT_REF_SLUG} ./
     - docker login --username ${DOCKER_HUB_LOGIN} --password ${DOCKER_HUB_PASSWORD}
-    - docker tag reddit-gitlab:latest ${DOCKER_HUB_LOGIN}/reddit-gitlab:${CI_COMMIT_REF_SLUG}
     - docker push ${DOCKER_HUB_LOGIN}/reddit-gitlab:${CI_COMMIT_REF_SLUG}
 
 test_unit_job:
