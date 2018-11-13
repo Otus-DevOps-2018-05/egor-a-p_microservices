@@ -7,9 +7,7 @@ variables:
   DATABASE_URL: 'mongodb://mongo/user_posts'
 
 before_script:
-  - apk --update add ruby ruby-io-console ruby-irb ruby-json ruby-rake ruby-rdoc
-  - gem install bcrypt
-  - gem install bundler --no-document
+  - apk --no-cache add ruby ruby-dev ruby-bundler ruby-json ruby-irb ruby-rake ruby-bigdecimal
   - cd reddit
   - bundle install
 
