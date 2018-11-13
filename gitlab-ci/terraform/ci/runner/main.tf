@@ -10,6 +10,7 @@ resource "docker_container" "gitlab_runner" {
   count = "${var.runners_number}"
   image = "${docker_image.gitlab_runner.latest}"
   name = "gitlab-runner-${count.index}"
+  privileged = true
   volumes {
     host_path = "/srv/runner-${count.index}/config"
     container_path = "/etc/gitlab-runner"
