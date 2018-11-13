@@ -14,7 +14,6 @@ resource "docker_container" "gitlab_runner" {
   volumes {
     host_path = "/srv/runner-${count.index}/config"
     container_path = "/etc/gitlab-runner"
-    read_only = false
   }
   volumes {
     host_path = "/var/run/docker.sock"

@@ -14,16 +14,13 @@ before_script:
 build_job:
   stage: build
   image: docker:latest
-  variables:
-    DOCKER_DRIVER: overlay
-
   services:
     - docker:dind
   script:
     - echo 'Building'
     - docker build -t ${DOCKER_HUB_LOGIN}/${CI_COMMIT_REF_SLUG} ./
     - docker login --username ${DOCKER_HUB_LOGIN} --password ${DOCKER_HUB_PASSWORD}
-    - docker push ${DOCKER_HUB_LOGIN}/${CI_COMMIT_REF_SLUG}
+    - docker push ${DOCKER_HUB_LOGIN}/reddit-gitlab:${CI_COMMIT_REF_SLUG}
 
 test_unit_job:
   stage: test

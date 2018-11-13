@@ -7,6 +7,7 @@ gitlab-runner register \
   --executor "docker" \
   --docker-image alpine:latest \
   --description "docker-runner" \
+  --docker-privileged \
   --tag-list "linux,xenial,ubuntu,docker" \
   --run-untagged \
   --locked="false"
