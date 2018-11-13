@@ -84,23 +84,10 @@ egor-a-p microservices repository
  
  Что сделано:
  
-  - добавлен docker-compose.yml
-  - в docker-compose.yml изменен под две сети
-  - docker-compose.yml параметризирован (порт публикации сервиса ui, версии сервисов, volume для монго)
-  - добавлены .env и .env.example файлы
-  - все создаваемые docker-compose сущности имеют одинаковый префикс src, префикс может быть изменен опцией -p либо переменной COMPOSE_PROJECT_NAME
+  - подготовлен хост с докером. гитлабом и раннерами
+  - добавлен пайплайн
+  - добавлен тест к приложению
 
  Задание со *:
-  - чтобы изменять код каждого из приложений, не выполняя сборку образа в docker-compose.override.yml монтируются volume-ы с исходниками приложения в контейнеры
-  ```
-      APP_PATH=/home/docker-user/src
-  
-      ${APP_PATH}/ui:/app
-      ${APP_PATH}/post-py:/app
-      ${APP_PATH}/comment:/app
-      
-      docker-machine scp -r ui docker-host:~/src/
-      docker-machine scp -r post-py docker-host:~/src/
-      docker-machine scp -r comment docker-host:~/src/
-  ```
-  - в docker-compose.override.yml добавлен запуск puma для руби приложений в дебаг режиме с двумя воркерами
+  - докер-хост, гитлаб и раннеры можно разворачивать из /gitlab-ci/terraform/ci
+  - добавлены уведомления в Slack #egor_petrov
