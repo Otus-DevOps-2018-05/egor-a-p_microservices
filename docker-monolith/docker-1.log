@@ -1,9 +1,0 @@
-REPOSITORY                 TAG                 IMAGE ID            CREATED             SIZE
-egor-a-p/ubuntu-tmp-file   latest              065c10a9831c        19 seconds ago      115MB
-hello-world                latest              4ab4c602aa5e        3 weeks ago         1.84kB
-ubuntu                     16.04               b9e15a5d1e1a        3 weeks ago         115MB
-
-Образ хранит конфигурацию для создания нового контейнера (ссылку на родительский образ, конфиг, ссылки на слои).
-Контейнер является инстансом образа и хранит свой контекст (состояние, pid, ограничения ресурсов, конфиг сети).
-
-

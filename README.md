@@ -91,3 +91,43 @@ egor-a-p microservices repository
  Задание со *:
   - докер-хост, гитлаб и раннеры можно разворачивать из /gitlab-ci/terraform/ci
   - добавлены уведомления в Slack #egor_petrov
+
+  ## Домашнее задание 17
+ 
+ Что сделано:
+ 
+  - добавлены окружения dev, stage и prod
+  - добавлены динамические окружения
+
+ Задание со *:
+  - при пуше новой ветки должен создается виртуалка для окружения с возможностью удалить его кнопкой
+  - в шаге build собирается образ reddit и пушится в docker hub
+  - образ reddit деплоится при пуше ветки
+
+  ## Домашнее задание 18
+  
+ Config:
+ ```
+   gcloud compute firewall-rules create prometheus-default --allow tcp:9090  
+   gcloud compute firewall-rules create puma-default --allow tcp:9292
+   export GOOGLE_PROJECT=
+   
+   docker-machine create --driver google \
+       --google-machine-image https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts \
+       --google-machine-type n1-standard-1 \
+       --google-zone europe-north1-c \
+       docker-host
+   
+   eval $(docker-machine env docker-host)
+   docker run --rm -p 9090:9090 -d --name prometheus  prom/prometheus
+ ```
+ 
+ Что сделано:
+ 
+  - добавлены окружения dev, stage и prod
+  - добавлены динамические окружения
+
+ Задание со *:
+  - при пуше новой ветки должен создается виртуалка для окружения с возможностью удалить его кнопкой
+  - в шаге build собирается образ reddit и пушится в docker hub
+  - образ reddit деплоится при пуше ветки
