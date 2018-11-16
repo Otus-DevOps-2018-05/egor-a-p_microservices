@@ -25,52 +25,9 @@ services:
     networks:
       back_net:
       front_net:
-  prometheus:
-    image: ${USER_NAME}/prometheus:${PROMETHEUS_VERSION}
-    ports:
-      - '9090:9090'
-    volumes:
-      - prometheus_data:/prometheus
-    networks:
-      front_net:
-      back_net:
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention=1d'
-  node-exporter:
-    image: prom/node-exporter:${NODE_EXPORTER_VERSION}
-    user: root
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    networks:
-      front_net:
-      back_net:
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
-  blackbox-exporter:
-    image: prom/blackbox-exporter:${BLACKBOX_EXPORTER_VERSION}
-    ports:
-      - '9115:9115'
-    networks:
-      back_net:
-      front_net:
-  mongo-exporter:
-    image: xendera/mongodb-exporter:${MONGO_EXPORTER_VERSION}
-    ports:
-      - 9216:9216
-    environment:
-      - MONGODB_URL=mongodb://post_db
-    networks:
-      back_net:
 
 volumes:
   post_db:
-  prometheus_data:
 
 networks:
   front_net:
