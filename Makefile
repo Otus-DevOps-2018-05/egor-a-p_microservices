@@ -20,33 +20,39 @@ host_up: init
 host_down:
 	docker-machine rm $(INSTANCE) -f
 
-build: build_ui build_comment build_post build_prometheus
+build: build_ui build_comment build_post build_prometheus build_alertmanager
 
 build_ui:
-	eval $$(docker-machine env $(INSTANCE)) && cd src/ui && bash docker_build.sh
+	eval $$(docker-machine env $(INSTANCE)) && export USER_NAME=$(USER_NAME) && cd src/ui && bash docker_build.sh
 
 build_comment:
-	eval $$(docker-machine env $(INSTANCE)) && cd src/comment && bash docker_build.sh
+	eval $$(docker-machine env $(INSTANCE)) && export USER_NAME=$(USER_NAME) && cd src/comment && bash docker_build.sh
 
 build_post:
-	eval $$(docker-machine env $(INSTANCE)) && cd src/post-py && bash docker_build.sh
+	eval $$(docker-machine env $(INSTANCE)) && export USER_NAME=$(USER_NAME) && cd src/post-py && bash docker_build.sh
 
 build_prometheus:
 	eval $$(docker-machine env $(INSTANCE)) && docker build -t $(USER_NAME)/prometheus monitoring/prometheus
 
-push: push_ui push_comment push_post push_prometheus
+build_alertmanager:
+	eval $$(docker-machine env $(INSTANCE)) && docker build -t $(USER_NAME)/alertmanager monitoring/alertmanager
+
+push: push_ui push_comment push_post push_prometheus push_alertmanager
 
 push_ui:
-	eval $$(docker-machine env $(INSTANCE)) && docker push $(USER_NAME)/ui
+	eval $$(docker-machine env $(INSTANCE)) && export USER_NAME=$(USER_NAME) && docker push $(USER_NAME)/ui
 
 push_comment:
-	eval $$(docker-machine env $(INSTANCE)) && docker push $(USER_NAME)/comment
+	eval $$(docker-machine env $(INSTANCE)) && export USER_NAME=$(USER_NAME) && docker push $(USER_NAME)/comment
 
 push_post:
-	eval $$(docker-machine env $(INSTANCE)) && docker push $(USER_NAME)/post
+	eval $$(docker-machine env $(INSTANCE)) && export USER_NAME=$(USER_NAME) && docker push $(USER_NAME)/post
 
 push_prometheus:
-	eval $$(docker-machine env $(INSTANCE)) && docker push $(USER_NAME)/prometheus
+	eval $$(docker-machine env $(INSTANCE)) && export USER_NAME=$(USER_NAME) && docker push $(USER_NAME)/prometheus
+
+push_alertmanager:
+	eval $$(docker-machine env $(INSTANCE)) && export USER_NAME=$(USER_NAME) && docker push $(USER_NAME)/alertmanager
 
 up:
 	eval $$(docker-machine env $(INSTANCE)) && cd docker && docker-compose -f docker-compose.yml -f docker-compose-monitoring.yml up -d
