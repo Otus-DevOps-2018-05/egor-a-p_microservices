@@ -22,6 +22,10 @@ services:
         tag: service.ui
   post:
     image: ${USER_NAME}/post:${POST_VERSION}
+    depends_on:
+      - post_db
+    ports:
+      - "5000:5000"
     networks:
       back_net:
       front_net:
