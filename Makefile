@@ -17,40 +17,40 @@ host_up: init
            --google-machine-type n1-standard-1 \
            --google-zone europe-north1-c $(INSTANCE)
 
-host_down: init
+host_down:
 	docker-machine rm $(INSTANCE) -f
 
 build: build_ui build_comment build_post build_prometheus
 
-build_ui: init
-	cd src/ui && bash docker_build.sh
+build_ui:
+	eval $$(docker-machine env $(INSTANCE)) && cd src/ui && bash docker_build.sh
 
-build_comment: init
-	cd src/comment && bash docker_build.sh
+build_comment:
+	eval $$(docker-machine env $(INSTANCE)) && cd src/comment && bash docker_build.sh
 
-build_post: init
-	cd src/post-py && bash docker_build.sh
+build_post:
+	eval $$(docker-machine env $(INSTANCE)) && cd src/post-py && bash docker_build.sh
 
-build_prometheus: init
-	docker build -t $(USER_NAME)/prometheus monitoring/prometheus
+build_prometheus:
+	eval $$(docker-machine env $(INSTANCE)) && docker build -t $(USER_NAME)/prometheus monitoring/prometheus
 
 push: push_ui push_comment push_post push_prometheus
 
-push_ui: init
-	docker push $(USER_NAME)/ui
+push_ui:
+	eval $$(docker-machine env $(INSTANCE)) && docker push $(USER_NAME)/ui
 
-push_comment: init
-	docker push $(USER_NAME)/comment
+push_comment:
+	eval $$(docker-machine env $(INSTANCE)) && docker push $(USER_NAME)/comment
 
-push_post: init
-	docker push $(USER_NAME)/post
+push_post:
+	eval $$(docker-machine env $(INSTANCE)) && docker push $(USER_NAME)/post
 
-push_prometheus: init
-	docker push $(USER_NAME)/prometheus
+push_prometheus:
+	eval $$(docker-machine env $(INSTANCE)) && docker push $(USER_NAME)/prometheus
 
 up:
-	cd docker && docker-compose -f docker-compose.yml -f docker-compose-monitoring.yml up -d
+	eval $$(docker-machine env $(INSTANCE)) && cd docker && docker-compose -f docker-compose.yml -f docker-compose-monitoring.yml up -d
 
 down:
-	cd docker && docker-compose -f docker-compose.yml -f docker-compose-monitoring.yml down
+	eval $$(docker-machine env $(INSTANCE)) && cd docker && docker-compose -f docker-compose.yml -f docker-compose-monitoring.yml down
 
