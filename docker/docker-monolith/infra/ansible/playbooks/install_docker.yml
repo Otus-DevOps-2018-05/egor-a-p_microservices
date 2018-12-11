@@ -1,0 +1,23 @@
+---
+- name: Install Docker
+  hosts: all
+  become: true
+  tags:
+    - install_docker
+  roles:
+    - role: angstwad.docker_ubuntu
+  tasks:
+    - name: Enable docker REST API
+      lineinfile:
+        path: /lib/systemd/system/docker.service
+        regexp: '^ExecStart='
+        line: 'ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock'
+      notify: Restart docker
+
+  handlers:
+    - name: Restart docker
+      become: true
+      systemd:
+        daemon_reload: yes
+        name: docker.service
+        state: restarted

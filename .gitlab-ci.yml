@@ -1,0 +1,127 @@
+stages:
+  - build
+  - test
+  - review
+  - stage
+  - production
+
+variables:
+  DATABASE_URL: 'mongodb://mongo/user_posts'
+  MACHINE_IP: ''
+
+before_script:
+  - cd reddit
+
+build_job:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo 'Building'
+    - docker build -t ${DOCKER_HUB_LOGIN}/reddit-gitlab:${CI_COMMIT_REF_SLUG} ./
+    - docker login --username ${DOCKER_HUB_LOGIN} --password ${DOCKER_HUB_PASSWORD}
+    - docker push ${DOCKER_HUB_LOGIN}/reddit-gitlab:${CI_COMMIT_REF_SLUG}
+
+test_unit_job:
+  stage: test
+  image: ruby:2.4.2
+  services:
+    - mongo:latest
+  script:
+    - bundle install
+    - ruby simpletest.rb
+
+test_integration_job:
+  stage: test
+  script:
+    - echo 'Testing 2'
+
+branch_review:
+  stage: review
+  image: google/cloud-sdk:alpine
+
+  before_script:
+    - echo "Deploy to $CI_ENVIRONMENT_SLUG"
+  script:
+    # Install tools
+    - apk add --update make ca-certificates openssl python curl docker
+    - update-ca-certificates
+
+    # Prepare GCP credentials
+    - echo $GCP_CREDENTIALS > /tmp/gcloud-service-key.json
+    - export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcloud-service-key.json
+
+    # Install docker-machine
+    - base=https://github.com/docker/machine/releases/download/v0.14.0 &&
+      curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
+      install /tmp/docker-machine /usr/local/bin/docker-machine
+
+    # Create VM
+    - docker-machine create --driver google
+      --google-machine-image https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts
+      --google-machine-type n1-standard-1
+      --google-project $GCP_PROJECT_ID
+      --google-zone europe-north1-c reddit-gitlab-$CI_ENVIRONMENT_SLUG
+
+    # Export IP
+    - export MACHINE_IP=$(docker-machine ip reddit-gitlab-$CI_ENVIRONMENT_SLUG)
+    - echo $MACHINE_IP
+
+    # Deploy app
+    - eval $(docker-machine env --shell sh reddit-gitlab-$CI_ENVIRONMENT_SLUG)
+    - docker run -d -p 9292:9292 ${DOCKER_HUB_LOGIN}/reddit-gitlab:${CI_COMMIT_REF_SLUG}
+  environment:
+    name: branch/$CI_COMMIT_REF_NAME
+    url: https://beta.example.com #как сюда пробросить IP виртуалки не понял
+    on_stop: delete_branch_review
+  only:
+    - branches
+  except:
+    - master
+
+delete_branch_review:
+  stage: review
+  variables:
+    GIT_STRATEGY: none
+  image: google/cloud-sdk:alpine
+  when: manual
+  before_script:
+    - echo "Deleting env"
+  script:
+    # Install tools
+    - apk add --update make ca-certificates openssl python curl
+    - update-ca-certificates
+
+    # Prepare GCP credentials
+    - echo $GCP_CREDENTIALS > /tmp/gcloud-service-key.json
+    - gcloud auth activate-service-account --key-file=/tmp/gcloud-service-key.json
+    - gcloud config set project $GCP_PROJECT_ID
+
+     # Delete VM
+    - gcloud compute instances delete reddit-gitlab-${CI_ENVIRONMENT_SLUG} --zone=europe-north1-c
+  environment:
+    name: branch/$CI_COMMIT_REF_NAME
+    action: stop
+
+staging:
+  stage: stage
+  when: manual
+  only:
+    - /^\d+\.\d+\.\d+/
+  script:
+    - echo 'Deploy'
+  environment:
+    name: stage
+    url: https://beta.example.com
+
+production:
+  stage: production
+  when: manual
+  only:
+    - /^\d+\.\d+\.\d+/
+  script:
+    - echo 'Deploy'
+  environment:
+    name: production
+    url: https://example.com

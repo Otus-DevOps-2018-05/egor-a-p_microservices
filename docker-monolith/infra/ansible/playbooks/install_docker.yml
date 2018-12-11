@@ -1,8 +1,0 @@
----
-- name: Install Docker
-  hosts: all
-  become: true
-  tags:
-    - install_docker
-  roles:
-    - angstwad.docker_ubuntu
