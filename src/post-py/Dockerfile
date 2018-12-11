@@ -5,6 +5,8 @@ WORKDIR /app
 ENV POST_DATABASE_HOST=post_db \
     POST_DATABASE=posts
 
+RUN apk --no-cache add gcc musl-dev
+
 COPY helpers.py \
      post_app.py \
      requirements.txt \
